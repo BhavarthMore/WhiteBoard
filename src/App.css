@@ -1,38 +1,83 @@
-.App {
-  text-align: center;
+/* App.css */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  height: 100vh;
 }
 
-.App-link {
-  color: #61dafb;
+.toolbar {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  width: 100%;
+  justify-content: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.canvas {
+  position: relative;
+  width: 400px; /* Maintain consistent width */
+  height: 500px; /* Maintain consistent height */
+  background-color: #fafafa;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+  overflow: hidden; /* Prevent overflow from dragging */
+}
+
+.text-item {
+  position: absolute; /* Ensure positioning is absolute */
+  user-select: none; /* Prevent text selection */
+  cursor: move; /* Change cursor to indicate draggable text */
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: #fff;
+  width: 400px; /* Maintain consistent width */
+  justify-content: center;
+  border-top: 1px solid #ddd;
+}
+
+.text-controls select {
+  padding: 3px;
+}
+
+.text-controls button {
+  padding: 3px 5px;
+  margin-left: 5px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  background-color: #eee;
+}
+
+input[type='text'] {
+  padding: 5px;
+  width: 150px;
+}
+
+button {
+  padding: 5px 10px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  background-color: #eee;
+}
+
+
+
+.active-button {
+  background-color: black; /* Change background to black */
+  color: white; /* Change text color to white */
 }
