@@ -37,8 +37,11 @@ function App() {
     const offsetLeft = canvasRef.current?.offsetLeft || 0;
     const offsetTop = canvasRef.current?.offsetTop || 0;
 
-    const newX = event.clientX - offsetLeft;
-    const newY = event.clientY - offsetTop;
+    const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+    const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+
+    const newX = clientX - offsetLeft;
+    const newY = clientY - offsetTop;
 
     const textItem = textItems.find(item => item.id === id);
     const textWidth = calculateTextWidth(textItem);
@@ -62,17 +65,27 @@ function App() {
   const handleMouseDown = (id, event) => {
     event.preventDefault();
 
-    const onMouseMove = (e) => {
-      moveText(e, id);
-    };
+    const onMouseMove = (e) => moveText(e, id);
 
     const onMouseUp = () => {
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
+    const onTouchMove = (e) => moveText(e, id);
+
+    const onTouchEnd = () => {
+      document.removeEventListener('touchmove', onTouchMove);
+      document.removeEventListener('touchend', onTouchEnd);
+    };
+
+    if (event.touches) {
+      document.addEventListener('touchmove', onTouchMove);
+      document.addEventListener('touchend', onTouchEnd);
+    } else {
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    }
   };
 
   const calculateTextWidth = (item) => {
@@ -100,27 +113,12 @@ function App() {
     setRedoHistory(newRedoHistory);
   };
 
-  // Handlers for bold, italic, and underline
-  const toggleBold = () => {
-    setIsBold(!isBold);
-  };
+  const toggleBold = () => setIsBold(!isBold);
+  const toggleItalic = () => setIsItalic(!isItalic);
+  const toggleUnderline = () => setIsUnderline(!isUnderline);
 
-  const toggleItalic = () => {
-    setIsItalic(!isItalic);
-  };
-
-  const toggleUnderline = () => {
-    setIsUnderline(!isUnderline);
-  };
-
-  // Functions to adjust font size
-  const increaseFontSize = () => {
-    setCurrentFontSize(prevSize => prevSize + 1);
-  };
-
-  const decreaseFontSize = () => {
-    setCurrentFontSize(prevSize => Math.max(1, prevSize - 1)); // Prevent font size from going below 1
-  };
+  const increaseFontSize = () => setCurrentFontSize(prevSize => prevSize + 1);
+  const decreaseFontSize = () => setCurrentFontSize(prevSize => Math.max(1, prevSize - 1));
 
   return (
     <div className="container">
@@ -144,12 +142,13 @@ function App() {
               cursor: 'move',
             }}
             onMouseDown={(event) => handleMouseDown(item.id, event)}
+            onTouchStart={(event) => handleMouseDown(item.id, event)}
           >
             {item.text}
           </div>
         ))}
       </div>
-      
+
       <div className="footer">
         <input
           type="text"
@@ -162,19 +161,19 @@ function App() {
         <button onClick={increaseFontSize}>+</button>
         <button
           onClick={toggleBold}
-          className={isBold ? 'active-button' : ''} // Use a class based on state
+          className={isBold ? 'active-button' : ''}
         >
           B
         </button>
         <button
           onClick={toggleItalic}
-          className={isItalic ? 'active-button' : ''} // Use a class based on state
+          className={isItalic ? 'active-button' : ''}
         >
           I
         </button>
         <button
           onClick={toggleUnderline}
-          className={isUnderline ? 'active-button' : ''} // Use a class based on state
+          className={isUnderline ? 'active-button' : ''}
         >
           U
         </button>
